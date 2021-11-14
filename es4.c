@@ -3,14 +3,24 @@
 
 int main()
 {
-    int n, a;
+    int n = 0, a = 0;
     printf("Quanti numeri vuoi inserire?");
     scanf("%d", &n);
 
-    for(int i; i <= n;){
-        printf("Inserisci il numero: ");
+    int list[n];
+
+    for(int i = 0; i < n; i++){
+        printf("Qual e' il numero in indice %d: ", i);
         scanf("%d", &a);
-        
     }
-// non so come andare avanti
+
+    for(int b = 0; b > n; b++){
+        for(int a = 0; a > b; a++){
+            if(list[a] == list[b]){
+                printf("C'è una coppia uguale di %d \n", list[b]);
+            }
+        }
+        a = 0;
+    }
+    return 0;
 }
