@@ -11,16 +11,15 @@ int main()
 
     for(int i = 0; i < n; i++){
         printf("Qual e' il numero in indice %d: ", i);
-        scanf("%d", &a);
+        scanf("%d", &list[i]);
     }
 
-    for(int b = 0; b > n; b++){
-        for(int a = 0; a > b; a++){
-            if(list[a] == list[b]){
-                printf("C'è una coppia uguale di %d \n", list[b]);
+    for(int i = 0; i < n; i++){
+        for(int a = 0; a < i; a++){
+            if(list[a] == list[i]){
+                printf("C'e' una coppia uguale di %d \n", list[i]);
             }
         }
-        a = 0;
     }
     return 0;
 }
