@@ -24,13 +24,17 @@ int MyIndex=4;
 
 
 void Visualizza(int pos)
-{ int i=0;
-while(i<pos){	
+{
+int i=0;
+while(i<pos)
+{	
  	printf("\n\n     ID:%d", archivio[i].id);
  	printf("\n COGNOME:%s ", archivio[i].cognome);
 	printf("\n    NOME:%s ", archivio[i].nome);
 	printf("\n    NUMERO TELEFONO:%d ", archivio[i].numero_tel);
-	i++;}}
+	i++;
+	}
+}
 
 int Insert(int pos)
 {
@@ -44,7 +48,7 @@ int Insert(int pos)
 	}
 	archivio[pos].id = pos + 1;
 	
-	printf("\nNuovo Rcd n. %d:", pos);
+	printf("\nNuovo Rcd n. %d:", pos + 1);
 	printf("\nCOGNOME:");
 	scanf("%s",archivio[pos].cognome);
 	printf("   NOME:");
@@ -103,7 +107,7 @@ void VisualizzaByTel(int pos)
 	int i=0, trovato=0;
 	
 	printf("\nQuale telefono cerchi?:");
- 	scanf("%d", tel);
+ 	scanf("%d", &tel);
  	
 	for (i=0; i<pos; i++){
 	 	if(archivio[i].numero_tel == tel) {
@@ -134,7 +138,7 @@ int menu_scelta(void)
     printf("\nEffettua una scelta -> " );
     scanf("%d", &selezione );
     }
-    while (selezione < 0 || selezione > 3);
+    while (selezione < 0 || selezione > 5);
   return selezione;
 }
 
