@@ -1,3 +1,4 @@
+// Gruppo: Gioia Caliceti, Cecilia Ferrari, Xinyu Jiang
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h> // serve per atoi()
@@ -8,7 +9,7 @@
 
 typedef struct {
 	int id;
-  	char cognome[MAXSTR];
+  char cognome[MAXSTR];
 	char nome[MAXSTR];
 	int numero_tel;
 } s_arch;
@@ -22,12 +23,14 @@ s_arch archivio[N]={ // define 10
 };
 
 int MyIndex=4;
+int check = -1; //check per vedere se è stato salvato
 int MyOut(int);
 int Leggi(int);
 
 void Visualizza(int pos)
 {
 int i=0;
+//Leggi(pos);
 while(i<pos)
 {	
  	printf("\n\n     ID:%d", archivio[i].id);
@@ -50,8 +53,10 @@ int MyOut(int pos)
         fprintf(out, "%s ", archivio[i].cognome);
         fprintf(out, "%s ", archivio[i].nome);
         fprintf(out, "%d ", archivio[i].numero_tel);
+        fprintf(out, "%d ", pos);
       }
       fclose(out);
+      check = 0;
       return 0;
     }
   else
@@ -64,6 +69,7 @@ int MyOut(int pos)
 int Leggi(int pos)
 {
   FILE *read;
+  char tot[N];
   char id[N];
   char cognome[MAXSTR];
   char nome[MAXSTR];
@@ -74,18 +80,15 @@ int Leggi(int pos)
   if (read)
     { 
       for(int i=0; i < pos; i++){
-        fscanf(read, "%s %s %s %s", id, cognome, nome, numero_tel);
+        fscanf(read, "%s %s %s %s %s", id, cognome, nome, numero_tel, tot);
         if(numero_tel_prec != atoi(numero_tel)){
           archivio[i].id = atoi(id);
           strcpy(archivio[i].cognome, cognome);
           strcpy(archivio[i].nome, nome);
           archivio[i].numero_tel = atoi(numero_tel);
           numero_tel_prec = atoi(numero_tel);
+          MyIndex = atoi(tot);
         }
-        printf("\n\n     ID: %d ", archivio[i].id);
-        printf("\nCOGNOME: %s ", archivio[i].cognome);
-        printf("\n   NOME: %s ", archivio[i].nome);
-        printf("\n   NUMERO TELEFONO: %d ", archivio[i].numero_tel);
       }
 
       fclose(read);
@@ -96,6 +99,17 @@ int Leggi(int pos)
       printf("Errore apertura file");
       return -1;
     }
+}
+
+void Update(int pos){
+  FILE *file;
+  file = fopen(RUBRICA,"r");
+  int c = fgetc(file);
+  if(c != EOF){
+    printf("\nHayy\n");
+    Leggi(pos);
+    Leggi(MyIndex);
+  }
 }
 
 int Insert(int pos)
@@ -109,6 +123,7 @@ int Insert(int pos)
 	return(pos);
 	}
 	archivio[pos].id = pos + 1;
+  check = -1;
 	
 	printf("\nNuovo Rcd n. %d:", pos + 1);
 	printf("\nCOGNOME:");
@@ -144,11 +159,9 @@ void Scambia(int i, int j)
 
 void SortByCognome(int pos)
 {   
-    //int list[pos];
     int t;
     for(int i = 0; i < pos; i++){
         for(int v = i+1; v < pos; v++){
-			//printf("%d\n", strcmp(archivio[i].cognome, archivio[v].cognome));
     	    if(strcmp(archivio[i].cognome, archivio[v].cognome) > 0){
     	        Scambia(i, v);
     	    }
@@ -156,7 +169,6 @@ void SortByCognome(int pos)
 	}
 	Visualizza(MyIndex);
 }
-
 
 void VisualizzaByCognome(int pos)
 { 
@@ -176,7 +188,7 @@ void VisualizzaByCognome(int pos)
 		 }
  	}
  	if (trovato==0) 
-		 printf("\nNon e' presente il cognome cercato:");
+		 printf("\nNon e' presente il cognome cercato");
 }
 
 void VisualizzaByNome(int pos)
@@ -197,7 +209,7 @@ void VisualizzaByNome(int pos)
 		 }
  	}
  	if (trovato==0) 
-		 printf("\nNon e' presente il nome cercato:");
+		 printf("\nNon e' presente il nome cercato");
 }
 
 void VisualizzaByTel(int pos)
@@ -209,16 +221,16 @@ void VisualizzaByTel(int pos)
  	scanf("%d", &tel);
  	
 	for (i=0; i<pos; i++){
-	 	if(archivio[i].numero_tel == tel) {
+	 	if(archivio[i].numero_tel == tel){
 	 		printf("\n\n     ID: %d ", archivio[i].id);
 	 		printf("\nCOGNOME: %s ", archivio[i].cognome);
 	 		printf("\n   NOME: %s ", archivio[i].nome);
 	 		printf("\n   NUMERO TELEFONO: %d ", archivio[i].numero_tel);
 	 		trovato=1;
-		 }
+		}
  	}
  	if (trovato==0) 
-		 printf("\nNon e' presente il telefono cercato:");
+		 printf("\nNon e' presente il telefono cercato");
 }
 
 int menu_scelta(void)
@@ -240,41 +252,57 @@ int menu_scelta(void)
     printf("\nEffettua una scelta -> " );
     scanf("%d", &selezione );
     }
-    while (selezione < 0 || selezione > 8);
+    while (selezione < -1 || selezione > 8);
   return selezione;
 }
 
 int main(void)
 {
-    int scelta;
-    
-    while((scelta=menu_scelta())!=0){
-    switch(scelta){
-        case 1: 
-                Visualizza(MyIndex);
-                break;
-        case 2:
-                MyIndex=Insert(MyIndex);
-                break;
-        case 3:
-                SortByCognome(MyIndex);
-                break;
-        case 4:
-                VisualizzaByCognome(MyIndex);
-                break;
-        case 5:
-                VisualizzaByNome(MyIndex);
-                break;
-        case 6:
-                VisualizzaByTel(MyIndex);
-                break;
-        case 7:
-                MyOut(MyIndex);
-                break;
-        case 8:
-                Leggi(MyIndex);
-                break;
-        }
-    }             
-    return 0;
+  int scelta;
+  char ans[1];
+  Update(MyIndex);//come aggiornamento
+
+  while((scelta=menu_scelta()) != -1){ //corrisponde al while True in py
+  switch(scelta){
+      case 0: 
+              if(check == -1){
+                printf("Non hai salvato\n");
+                printf("Sei sicuro di volere uscire? y/n\n");
+                scanf("%s", ans);
+                if(strcmp(ans, "n") == 0){
+                  break;
+                }else{
+                  return 0;
+                }
+              }else{
+                return 0;
+              }
+      case 1: 
+              Visualizza(MyIndex);
+              break;
+      case 2:
+              MyIndex=Insert(MyIndex);
+              break;
+      case 3:
+              SortByCognome(MyIndex);
+              break;
+      case 4:
+              VisualizzaByCognome(MyIndex);
+              break;
+      case 5:
+              VisualizzaByNome(MyIndex);
+              break;
+      case 6:
+              VisualizzaByTel(MyIndex);
+              break;
+      case 7:
+              MyOut(MyIndex);
+              break;
+      case 8:
+              Leggi(MyIndex);
+              Visualizza(MyIndex);
+              break;
+      }
+  }             
+  return 0;
 }
