@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h> // serve per atoi()
 
 #define N 10
 #define MAXSTR 15
@@ -21,7 +22,6 @@ s_arch archivio[N]={ // define 10
 };
 
 int MyIndex=4;
-//indico il numero di elementi allocati nel vettore archivio
 int MyOut(int);
 int Leggi(int);
 
@@ -41,54 +41,61 @@ while(i<pos)
 int MyOut(int pos)
 {
   FILE *out;
-  out = fopen(RUBRICA,"w+"); //apertura del file write
-  for(int i=0; i < pos; i++){
-    if (out)
-      {
-        fprintf(out, "\n\n     ID: %d ", archivio[i].id);
-        fprintf(out, "\nCOGNOME: %s ", archivio[i].cognome);
-        fprintf(out, "\n   NOME: %s ", archivio[i].nome);
-        fprintf(out, "\n   NUMERO TELEFONO: %d ", archivio[i].numero_tel);
-        
-        printf("Sono passato di quii");
-        return 0;
-        }
-    else
-      {
-        printf("Errore apertura file");
-        return -1;
+  out = fopen(RUBRICA,"w"); //apertura del file write
+
+  if (out)
+    {
+      for(int i=0; i < pos; i++){
+        fprintf(out, "%d ", archivio[i].id);
+        fprintf(out, "%s ", archivio[i].cognome);
+        fprintf(out, "%s ", archivio[i].nome);
+        fprintf(out, "%d ", archivio[i].numero_tel);
       }
-  }fclose(out);
+      fclose(out);
+      return 0;
+    }
+  else
+    {
+      printf("Errore apertura file");
+      return -1;
+    }
 }
 
 int Leggi(int pos)
 {
   FILE *read;
+  char id[N];
+  char cognome[MAXSTR];
+  char nome[MAXSTR];
+  char numero_tel[MAXSTR];
+  int numero_tel_prec;
   read = fopen(RUBRICA,"r");
-  for(int i=0; i < pos; i++){
-    if (read)
-      { 
-        printf("\n\n     ID: %d ", archivio[i].id);
-        fscanf(read, "%d", &archivio[i].id);
-        printf("\nCOGNOME:");
-        fscanf(read, "%s",archivio[i].cognome);
-        printf("   NOME:");
-        fscanf(read, "%s",archivio[i].nome);
-        printf("   NUMERO TELEFONO:");
-        fscanf(read, "%d", &archivio[i].numero_tel);
-
+  
+  if (read)
+    { 
+      for(int i=0; i < pos; i++){
+        fscanf(read, "%s %s %s %s", id, cognome, nome, numero_tel);
+        if(numero_tel_prec != atoi(numero_tel)){
+          archivio[i].id = atoi(id);
+          strcpy(archivio[i].cognome, cognome);
+          strcpy(archivio[i].nome, nome);
+          archivio[i].numero_tel = atoi(numero_tel);
+          numero_tel_prec = atoi(numero_tel);
+        }
         printf("\n\n     ID: %d ", archivio[i].id);
         printf("\nCOGNOME: %s ", archivio[i].cognome);
         printf("\n   NOME: %s ", archivio[i].nome);
         printf("\n   NUMERO TELEFONO: %d ", archivio[i].numero_tel);
-        return 0;
       }
-    else
-      {
-        printf("Errore apertura file");
-        return -1;
-      }
-  }fclose(read);
+
+      fclose(read);
+      return 0;
+    }
+  else
+    {
+      printf("Errore apertura file");
+      return -1;
+    }
 }
 
 int Insert(int pos)
