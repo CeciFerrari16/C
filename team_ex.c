@@ -47,13 +47,13 @@ int MyOut(int pos)
   out = fopen(RUBRICA,"w"); //apertura del file write
 
   if (out)
-    {
+    { 
+      fprintf(out, "%d ", pos);
       for(int i=0; i < pos; i++){
         fprintf(out, "%d ", archivio[i].id);
         fprintf(out, "%s ", archivio[i].cognome);
         fprintf(out, "%s ", archivio[i].nome);
         fprintf(out, "%d ", archivio[i].numero_tel);
-        fprintf(out, "%d ", pos);
       }
       fclose(out);
       check = 0;
@@ -79,15 +79,16 @@ int Leggi(int pos)
   
   if (read)
     { 
+      fscanf(read, "%s ", tot);
+      MyIndex = atoi(tot);
       for(int i=0; i < pos; i++){
-        fscanf(read, "%s %s %s %s %s", id, cognome, nome, numero_tel, tot);
+        fscanf(read, "%s %s %s %s", id, cognome, nome, numero_tel);
         if(numero_tel_prec != atoi(numero_tel)){
           archivio[i].id = atoi(id);
           strcpy(archivio[i].cognome, cognome);
           strcpy(archivio[i].nome, nome);
           archivio[i].numero_tel = atoi(numero_tel);
           numero_tel_prec = atoi(numero_tel);
-          MyIndex = atoi(tot);
         }
       }
 
@@ -106,7 +107,6 @@ void Update(int pos){
   file = fopen(RUBRICA,"r");
   int c = fgetc(file);
   if(c != EOF){
-    printf("\nHayy\n");
     Leggi(pos);
     Leggi(MyIndex);
   }
