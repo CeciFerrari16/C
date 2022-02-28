@@ -104,8 +104,10 @@ int Leggi(int pos)
 
 void Update(int pos){
   FILE *file;
-  file = fopen(RUBRICA,"r");
+  file = fopen(RUBRICA,"a");
   int c = fgetc(file);
+  fclose(file);
+
   if(c != EOF){
     Leggi(pos);
     Leggi(MyIndex);
@@ -136,6 +138,29 @@ int Insert(int pos)
 	return(pos);
 }
 
+int Delete(int pos)
+{ 
+  int id;
+  printf("Quale contatto desideri eliminare?\n");
+  printf("Inserisci l'id:");
+  scanf("%d", &id);
+
+  if(id <= pos && id > 0){
+    for(int i = 0; i < pos; i++){
+      if(id == archivio[i].id){
+        archivio[i].id = 0;
+        strcpy("", archivio[i].cognome);
+        strcpy("", archivio[i].nome);
+        archivio[i].numero_tel = 0;
+        return 0;
+      }
+    }
+  }else{
+    printf("Il contenuto inserito non e' valido\n");
+    return -1;
+  }
+}
+
 void Scambia(int i, int j)
 {
   s_arch tmp;
@@ -163,7 +188,7 @@ void SortByCognome(int pos)
     for(int i = 0; i < pos; i++){
         for(int v = i+1; v < pos; v++){
     	    if(strcmp(archivio[i].cognome, archivio[v].cognome) > 0){
-    	        Scambia(i, v);
+    	      Scambia(i, v);
     	    }
         }
 	}
@@ -248,11 +273,12 @@ int menu_scelta(void)
     printf("\n6 -> Ricerca da telefono");
     printf("\n7 -> Salva");
     printf("\n8 -> Leggi");
+    printf("\n9 -> Elimina un contatto");
     printf("\n" );
     printf("\nEffettua una scelta -> " );
     scanf("%d", &selezione );
     }
-    while (selezione < -1 || selezione > 8);
+    while (selezione < -1 || selezione > 9);
   return selezione;
 }
 
@@ -301,6 +327,10 @@ int main(void)
       case 8:
               Leggi(MyIndex);
               Visualizza(MyIndex);
+              break;
+      case 9:
+              Delete(MyIndex);
+              printf("Sono passato qui");
               break;
       }
   }             
