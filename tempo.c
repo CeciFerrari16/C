@@ -12,15 +12,14 @@ di ordinamento per selezione */
 
 int V[N]; // Vettore di interi per il test
 
-const int test=1; // Flag per il test=1
+const int test=-1; // Flag, se test = -1 scrive gli scambi
 
 void Visualizza(int n) {
-    if (test ==1){
+    if (test > -1){
         for (int i=0; i<n; i++ ){
             printf("%d ", V[i]); 
         }
     }
-// SE TEST==1 La funzione visualizza gli elementi del vettore
 }
 
 void InsRnd(int n){ // elem
@@ -35,34 +34,41 @@ void InsRnd(int n){ // elem
 
 void Scambia(int a, int b){
     int i,tmp;
-    if (test==0) printf("(Scambio %d else %d)", V[a],V[b]);
+    if (test > -1) printf("(Scambio %d else %d)", V[a],V[b]);
     tmp=V[a]; 
     V[a]=V[b]; 
     V[b]=tmp;
 }
 
+
 void OrdinaSel(int n) { // Ordinamento per selezione 
-// SE TEST==1 verranno visualizzati gli scambi
     int x, y, i_min;
     int temp;
-    for(x=0; x < n - 1; x++){
+    for(x = 0; x < n - 1; x++){
         i_min = x;
-        for(y = x + 1; y< n; y++)
+        for(y = x + 1; y < n; y++)
             if(V[y] < V[i_min])
                 i_min = y;
         if(x != i_min){
             Scambia(i_min, x);
+            if(test > -1){
+                Visualizza(n);}
         }
-        if(test == 1){
-            Visualizza(n);}
     }
 }
 
-void OrdinaBubble(int n) {
-
-// Ordinamento Bubble 
-// SE TEST==1 verranno visualizzati gli scambi
-
+void OrdinaBubble(int n) { // Ordinamento Bubble 
+    int x, y, i_min; 
+    int temp; 
+    for (x = 0; x < n; x++){
+        for (y = x + 1; y < n; y++){
+            if (V[x] > V[y]){
+                Scambia(x, y);
+                if (test > -1){
+                    Visualizza(n); }
+            }
+        }
+    }
 }
 
 int main() {
@@ -72,21 +78,27 @@ int main() {
     scanf("%d",&elem);
     InsRnd(elem);
 
-    printf("\nVettore[%d] inserito Random\n",elem);
-    Visualizza(elem);
+    if(test > -1){
+        printf("\nVettore[%d] inserito Random\n",elem);
+        Visualizza(elem);
+    }
 
-    printf("\nOrdinamento selezione\n");
     clock_t begin = clock(); // Inizio misurazione tempo
-    OrdinaSel(elem);   //funzione da cronometrare
+    //printf("\nOrdinamento bubble\n");
+    OrdinaBubble(elem);   //funzione da cronometrare
+    //printf("\nOrdinamento selezione");
+    //OrdinaSel(elem);
     clock_t end = clock();// Fine Misurazione tempo impiegato da OrdinaSel
 
     // calculate elapsed time by finding difference (end - begin) and
     // dividing the difference by CLOCKS_PER_SEC to convert to seconds
     tempSel += (double)(end - begin) / CLOCKS_PER_SEC;
-    
-    printf("\nVettore[%d] ordinato\n",elem);
-    Visualizza(elem);
 
-    printf("\nIl tempo trascorso: %f secondi", tempSel); // Visualizzare il tempo impiegato (tempSel)
+    if(test > -1){
+        printf("\nVettore[%d] ordinato\n",elem);
+        Visualizza(elem); 
+    }
+
+    printf("\n%d;%f", elem, tempSel); // Visualizzare il tempo impiegato (tempSel)
     return 0;
 }
