@@ -23,13 +23,14 @@ int Ricerca(int elem){
     for(int i=0; i < elem; i++){
         if(V[i] == num){
             count += 1;
-            printf("\nLa posizione e' %d", i);
+            printf("\npos: %d", i);
         }
     }
     if(count == 0){
         printf("\nIl numero non e' presente nel vettore");
         return -1;
     }
+    printf("\nIl numero %d e' presente %d volte", num, count);
 }
 
 int RicercaSel(int elem){
@@ -37,11 +38,12 @@ int RicercaSel(int elem){
     for(int i=0; i < elem; i++){
         if(V[i] == num){
             count += 1;
-            printf("\nLa posizione e' %d", i);
+            printf("\npos: %d", i);
         }else if(V[i] > num && count == 0){
             printf("\nIl numero non e' presente nel vettore");
             return -1;
         }else if(V[i] > num){
+            printf("\nIl numero %d e' presente %d volte", num, count);
             return 0;
         }
     }
@@ -94,15 +96,13 @@ int Salva(char o[8], int elem, double tempSel){
 }
 
 void Tempo(int elem, int n){
-    printf("\nVettore[%d] inserito Random", elem);
     if(n == 0){
         double tempSel = 0;
-        //printf("\nOrdinamento selezione");
+        printf("\nOrdinamento selezione");
         OrdinaSel(elem);
 
         clock_t begins = clock(); // Inizio misurazione tempo
-        printf("\nVettore:");
-        Visualizza(elem);
+        //Visualizza(elem);
         RicercaSel(elem);
         clock_t ends = clock();// Fine Misurazione tempo impiegato da OrdinaSel
         
@@ -111,11 +111,9 @@ void Tempo(int elem, int n){
         
     }else if(n == 1){
         double temp = 0;
-        //printf("Vettore non ordinato\n");
 
         clock_t begin = clock(); // Inizio misurazione tempo
-        printf("\nVettore:");
-        Visualizza(elem);
+        //Visualizza(elem); 
         Ricerca(elem);
         clock_t end = clock();// Fine Misurazione tempo impiegato da OrdinaSel
         
@@ -127,6 +125,7 @@ void Tempo(int elem, int n){
 int main(){
     for(int elem = 1000;elem < N; elem += 1000){
         InsRnd(elem);
+        printf("\nVettore[%d] inserito Random", elem);
         Tempo(elem, 1);
         Tempo(elem, 0);
         printf("\n");
