@@ -1,6 +1,7 @@
 /* Esempio di programma base da completare
 per il test statistico dell'algoritmo 
-di ordinamento per selezione */
+di ordinamento per selezione 
+Gruppo: Gioia Caliceti, Cecilia Ferrari, Xinyu Jiang*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,14 +33,29 @@ void InsRnd(int n){ // elem
 // Inserisce nel vettore V e B numeri casuali da 1 a n
 }
 
+int Salva(char *f, int elem, double tempSel){
+    FILE *out;
+    out = fopen(f,"a+"); //apertura del file write
+    
+    if (out){ 
+        fprintf(out, "\n%d;%f", elem, tempSel); 
+        fclose(out);
+        return 0;
+    }
+    else
+    {
+       printf("Errore apertura file");
+       return -1;
+    }
+}
+
 void Scambia(int a, int b){
     int i,tmp;
-    if (test > -1) printf("(Scambio %d else %d)", V[a],V[b]);
+    if (test > -1) printf("\n(Scambio %d else %d)", V[a],V[b]);
     tmp=V[a]; 
     V[a]=V[b]; 
     V[b]=tmp;
 }
-
 
 void OrdinaSel(int n) { // Ordinamento per selezione 
     int x, y, i_min;
@@ -52,7 +68,8 @@ void OrdinaSel(int n) { // Ordinamento per selezione
         if(x != i_min){
             Scambia(i_min, x);
             if(test > -1){
-                Visualizza(n);}
+                //Visualizza(n);
+                }
         }
     }
 }
@@ -73,32 +90,38 @@ void OrdinaBubble(int n) { // Ordinamento Bubble
 
 int main() {
     int elem;
-    double tempSel = 0.0;
-    printf ("Inserire elementi test max[%d] " ,N);
-    scanf("%d",&elem);
-    InsRnd(elem);
-
-    if(test > -1){
-        printf("\nVettore[%d] inserito Random\n",elem);
-        Visualizza(elem);
+    double tempSels = 0, tempSelb = 0;
+    
+    for(elem = 1000;elem < N; elem += 1000){
+        InsRnd(elem);
+    
+        //printf("\nVettore[%d] inserito Random ",elem);
+        //Visualizza(elem);
+    
+        clock_t begins = clock(); // Inizio misurazione tempo
+        printf("\nOrdinamento selezione");
+        OrdinaSel(elem);
+        clock_t ends = clock();// Fine Misurazione tempo impiegato da OrdinaSel
+        
+        tempSels += (double)(ends - begins) / CLOCKS_PER_SEC;
+        Salva("SEL.txt", elem, tempSels);
+        
+        //printf("\nVettore[%d] ordinato ",elem);
+        //Visualizza(elem); 
     }
-
-    clock_t begin = clock(); // Inizio misurazione tempo
-    //printf("\nOrdinamento bubble\n");
-    OrdinaBubble(elem);   //funzione da cronometrare
-    //printf("\nOrdinamento selezione");
-    //OrdinaSel(elem);
-    clock_t end = clock();// Fine Misurazione tempo impiegato da OrdinaSel
-
-    // calculate elapsed time by finding difference (end - begin) and
-    // dividing the difference by CLOCKS_PER_SEC to convert to seconds
-    tempSel += (double)(end - begin) / CLOCKS_PER_SEC;
-
-    if(test > -1){
-        printf("\nVettore[%d] ordinato\n",elem);
-        Visualizza(elem); 
+    
+    for(elem = 1000;elem < N; elem += 1000){
+        InsRnd(elem);
+        
+        clock_t beginb = clock();
+        printf("\nOrdinamento bubble");
+        OrdinaBubble(elem);
+        clock_t endb = clock();
+        
+        tempSelb += (double)(endb - beginb) / CLOCKS_PER_SEC;
+        Salva("BUB.txt", elem, tempSelb);
+        
+        //printf("\n%d;%f", elem, tempSel); // Visualizzare il tempo impiegato (tempSel)
     }
-
-    printf("\n%d;%f", elem, tempSel); // Visualizzare il tempo impiegato (tempSel)
     return 0;
 }
